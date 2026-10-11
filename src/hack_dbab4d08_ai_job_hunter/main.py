@@ -15,11 +15,28 @@ from hack_dbab4d08_ai_job_hunter.schemas import (
     RecommendationRequest,
     RecommendationResponse,
 )
-from pathlib import Path
 
+
+from pathlib import Path
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
+
 
 app = FastAPI()
+
+STATIC_DIR = Path(__file__).resolve().parent / "static"
+
+app.mount(
+    "/static",
+    StaticFiles(directory=STATIC_DIR),
+    name="static"
+)
+
+
+@app.get("/", include_in_schema=False)
+def home():
+    return FileResponse(STATIC_DIR / "index.html")
 
 contractors = load_contractors()
 
