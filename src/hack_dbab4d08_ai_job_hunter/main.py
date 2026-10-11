@@ -15,7 +15,9 @@ from hack_dbab4d08_ai_job_hunter.schemas import (
     RecommendationRequest,
     RecommendationResponse,
 )
+from pathlib import Path
 
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
@@ -120,3 +122,20 @@ def recommend(request: RecommendationRequest):
             ]
         ].to_dict(orient="records"),
     }
+@app.get(
+    "/",
+    response_class=FileResponse,
+    include_in_schema=False,
+)
+def frontend() -> FileResponse:
+    html_path = (
+        Path(__file__).resolve().parents[2]
+        / "static"
+        / "index.html"
+    )
+
+    return FileResponse(
+        html_path,
+        media_type="text/html",
+        headers={"Cache-Control": "no-store"},
+    )
